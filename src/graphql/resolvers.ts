@@ -29,7 +29,7 @@ export const resolvers: IResolvers = {
   },
 
   Mutation: {
-    addPost: async (_,{ titulo, contenido, autor,  fechaCreada}: { titulo: string; contenido: string; autor: string,  fechaCreada: string}) => {
+    addPost: async (_,{ titulo, contenido, autor,  fechaCreada}: { titulo: string; contenido: string; autor: string,  fechaCreada: string},{user}) => {
         const db = getDB();
         const result = await db.collection(COLLECTION).insertOne({
           titulo,
@@ -71,6 +71,10 @@ export const resolvers: IResolvers = {
         throw new Error("Las credenciales no son correctas")
       }
       return signToken(user._id.toString())
-    } 
+    },
+    
+    updatePost:async(_,{_id,titulo,contenido,autor,fechaCreada}:{_id:string;titulo: string; contenido: string; autor: string,  fechaCreada: string},{})=>{
+
+    }
   },
 };
