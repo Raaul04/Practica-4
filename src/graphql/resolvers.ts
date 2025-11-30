@@ -29,21 +29,26 @@ export const resolvers: IResolvers = {
   },
 
   Mutation: {
-    addPost: async (_,{ titulo, contenido, autor,  fechaCreada}: { titulo: string; contenido: string; autor: string,  fechaCreada: string},{user}) => {
+    addPost: async (_,{ titulo, contenido,  fechaCreada}: { titulo: string; contenido: string; fechaCreada: string},{user}) => {
+      if(!user){
+        throw new Error("Usuario no autentificado")
+      }
         const db = getDB();
+
         const result = await db.collection(COLLECTION).insertOne({
           titulo,
           contenido,
-          autor,
-          fechaCreada
+          autor:user.name,
+          fechaCreada,
+          userId:new ObjectId(user._id)
         });
 
         return {
           _id: result.insertedId,
           titulo,
           contenido, 
-          autor,
-          fechaCreada
+          autor:user.name,
+          fechaCreada,
         };
 
     },
@@ -65,6 +70,9 @@ export const resolvers: IResolvers = {
 
 
     deletePost: async (_, { _id }: { _id: string },{user}) => {
+      if(!user){
+        throw new Error("Usuario no autentificado")
+      }
       const db = getDB();
       const result = await db.collection(COLLECTION).deleteOne({ _id: new ObjectId(_id) });
 
@@ -76,8 +84,8 @@ export const resolvers: IResolvers = {
     },
 
     
-    register: async(_, {email, password}: {email: string, password: string}) => {
-      const userId = await createUser(email, password)
+    register: async(_, {name,email, password}: {name:string,email: string, password: string}) => {
+      const userId = await createUser(name,email, password)
       return signToken(userId)
     }, 
 
@@ -89,6 +97,13 @@ export const resolvers: IResolvers = {
       return signToken(user._id.toString())
     },
     
+    updatePost:async(_,{_id,titulo,contenido,autor,fechaCreada}:{_id:string;titulo: string; contenido: string; autor: string,  fechaCreada: string},{user})=>{
+
+      if(!user){
+        throw new Error("Usuario no autentificado")
+      }
+
+    }
     
   },
 };

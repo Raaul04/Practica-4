@@ -4,11 +4,12 @@ import { ObjectId } from "mongodb";
 
 const COLLECTION="Users"
 
-export const createUser=async(email:string,password:string)=>{
+export const createUser=async(name:string,email:string,password:string)=>{
     const db=getDB()
     const PassEncriptao= await bcrypt.hash(password,10)
 
     const result= await db.collection(COLLECTION).insertOne({
+        name,
         email,
         password:PassEncriptao
     })

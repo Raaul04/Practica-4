@@ -39,7 +39,6 @@ export const typeDefs = gql`
         addPost(
             titulo:String!,
             contenido:String!,
-            autor:String!,
             fechaCreada:String!
         ): Post!
 
