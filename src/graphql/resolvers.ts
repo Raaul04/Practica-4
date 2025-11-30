@@ -56,19 +56,25 @@ export const resolvers: IResolvers = {
 
     },
 
-    updatePost: async (_, { _id, titulo, contenido, fechaCreada }: { _id: string, titulo: string; contenido: string; fechaCreada: string }, { }) => {
+    updatePost: async (_, { _id, titulo, contenido, fechaCreada }: { _id: string, titulo: string; contenido: string; fechaCreada: string }, { user}) => {
+      if (!user) {
+        throw new Error("Usuario no autentificado")
+      }
       const db = getDB();
       const updateObj: any = {};
+      if (titulo !== undefined) updateObj.titulo = titulo;
+      if (contenido !== undefined) updateObj.contenido = contenido;
+      if (fechaCreada !== undefined) updateObj.fechaCreada = fechaCreada;
 
       const result = await db.collection(COLLECTION).updateOne(
-        { _id: new ObjectId(_id) },
-        { $set: updateObj },
-      );
+      { _id: new ObjectId(_id), userId: new ObjectId(user._id) },
+      { $set: updateObj }
+     );
 
       if (result.matchedCount === 0) {
         throw new Error("No se encontró el post con ese ID");
       }
-      return result;
+      return result.acknowledged;
     },
 
 
