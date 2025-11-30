@@ -6,11 +6,11 @@ export const typeDefs = gql`
         _id:ID!,
         email: String!,
         name:String!,
-        password:String
+        password:String!
     }
 
     type Post{
-        _id: ID!,
+        _id: ID,
         titulo:String,
         contenido:String,
         autor:String,
@@ -21,7 +21,7 @@ export const typeDefs = gql`
 
         me: User
         getPost: [Post]!
-        getPostID(id : ID!): Post
+        getPostID(id:ID!): Post
     }
 
     type Mutation {
