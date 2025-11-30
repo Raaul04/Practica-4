@@ -48,6 +48,22 @@ export const resolvers: IResolvers = {
 
     },
 
+    updatePost: async (_, { _id, titulo, contenido, autor, fechaCreada }, {}) => {
+      const db = getDB();
+      const updateObj: any = {};
+
+      const result = await db.collection(COLLECTION).updateOne(
+          { _id: new ObjectId(_id) },
+          { $set: updateObj },
+        );
+
+      if (result.matchedCount === 0) {
+        throw new Error("No se encontró el post con ese ID");
+      }
+      return result;
+    },
+
+
     deletePost: async (_, { _id }: { _id: string },{user}) => {
       const db = getDB();
       const result = await db.collection(COLLECTION).deleteOne({ _id: new ObjectId(_id) });
@@ -73,8 +89,6 @@ export const resolvers: IResolvers = {
       return signToken(user._id.toString())
     },
     
-    updatePost:async(_,{_id,titulo,contenido,autor,fechaCreada}:{_id:string;titulo: string; contenido: string; autor: string,  fechaCreada: string},{})=>{
-
-    }
+    
   },
 };
