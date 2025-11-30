@@ -14,9 +14,9 @@ export const resolvers: IResolvers = {
       const db = getDB();
       return db.collection(COLLECTION).find().toArray();
     },
-    getPostID: async (_, { _id }: { _id: string }) => {
+    getPostID: async (_, { id }: { id: string }) => {
       const db = getDB();
-      return db.collection(COLLECTION).findOne({ _id: new ObjectId(_id) });
+      return db.collection(COLLECTION).findOne({ _id: new ObjectId(id) });
     },
 
     me: async (_, __, { user }) => {
@@ -26,7 +26,7 @@ export const resolvers: IResolvers = {
         _id: user._id.toString(),
         email: user.email,
         name: user.name,
-        password: user.password, 
+        password: user.password,
       }
     }
   },
@@ -56,26 +56,36 @@ export const resolvers: IResolvers = {
 
     },
 
-    updatePost: async (_, { _id, titulo, contenido, fechaCreada }: { _id: string, titulo: string; contenido: string; fechaCreada: string }, { user}) => {
+    updatePost: async (
+      _,
+      { _id, titulo, contenido, fechaCreada }: { _id: string; titulo?: string; contenido?: string; fechaCreada?: string },
+      { user }
+    ) => {
       if (!user) {
-        throw new Error("Usuario no autentificado")
+        throw new Error("Usuario no autentificado");
       }
+
       const db = getDB();
+
       const updateObj: any = {};
       if (titulo !== undefined) updateObj.titulo = titulo;
       if (contenido !== undefined) updateObj.contenido = contenido;
       if (fechaCreada !== undefined) updateObj.fechaCreada = fechaCreada;
 
       const result = await db.collection(COLLECTION).updateOne(
-      { _id: new ObjectId(_id), userId: new ObjectId(user._id) },
-      { $set: updateObj }
-     );
+        { _id: new ObjectId(_id), userId: new ObjectId(user._id) },
+        { $set: updateObj }
+      );
 
       if (result.matchedCount === 0) {
-        throw new Error("No se encontró el post con ese ID");
+        throw new Error("No se encontró el post con ese ID o no es tuyo");
       }
-      return result.acknowledged;
+
+      return await db.collection(COLLECTION).findOne({
+        _id: new ObjectId(_id),
+      });
     },
+
 
 
     deletePost: async (_, { _id }: { _id: string }, { user }) => {

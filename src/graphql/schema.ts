@@ -28,7 +28,8 @@ export const typeDefs = gql`
     
         register(
             email: String!,
-            password: String!
+            password: String!,
+            name:String!
         ) : String!
 
         login(
