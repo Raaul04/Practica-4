@@ -48,11 +48,11 @@ export const typeDefs = gql`
             contenido:String,
             autor:String,
             fechaCreada:String
-        ): Post!
+        ): Post
 
         deletePost(
             _id:ID!
-        ): Post!
+        ): Boolean
 
     }
 
