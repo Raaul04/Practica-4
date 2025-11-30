@@ -48,6 +48,18 @@ export const resolvers: IResolvers = {
 
     },
 
+    deletePost: async (_, { _id }: { _id: string },{user}) => {
+      const db = getDB();
+      const result = await db.collection(COLLECTION).deleteOne({ _id: new ObjectId(_id) });
+
+      if (result.deletedCount === 0) {
+        throw new Error("no se encontro el id");
+      }
+
+      return true;
+    },
+
+    
     register: async(_, {email, password}: {email: string, password: string}) => {
       const userId = await createUser(email, password)
       return signToken(userId)

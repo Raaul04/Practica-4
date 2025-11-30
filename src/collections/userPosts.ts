@@ -13,7 +13,7 @@ export const createUser=async(email:string,password:string)=>{
         password:PassEncriptao
     })
 
-    return result.insertedId
+    return result.insertedId.toString()
 }
 
 export const validateUser=async(email:string,password:string)=>{
